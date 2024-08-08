@@ -155,18 +155,18 @@ def construct_graph(path_save_traj_split, path_save_loccoor, path_save_graph, pa
     # load data
     uid_traj = pickle.load(open(path_save_traj_split, 'rb'))
     loc_coor = pickle.load(open(path_save_loccoor, 'rb'))
-    town_info = gpd.read_file(params.path_town)['geometry']
-    print(f'#Loc in loc_coor: {len(loc_coor)}, #Town in town_info: {len(town_info)}')
+    tract_info = gpd.read_file(params.path_tract)['geometry']
+    print(f'#Loc in loc_coor: {len(loc_coor)}, #tract in tract_info: {len(tract_info)}')
     # get data
-    edge_in, edge_near_cell, edge_near_town, cell2town = utils.collect_adjecent(loc_coor, town_info)
-    node_cell, node_town, edge_flow_cell_idx, edge_flow_cell_attr, edge_flow_town_idx, edge_flow_town_attr = utils.collect_from_traj(uid_traj, loc_coor, cell2town, params.lid_size, town_info.shape[0], params.traj_len)
+    edge_in, edge_near_cell, edge_near_tract, cell2tract = utils.collect_adjecent(loc_coor, tract_info)
+    node_cell, node_tract, edge_flow_cell_idx, edge_flow_cell_attr, edge_flow_tract_idx, edge_flow_tract_attr = utils.collect_from_traj(uid_traj, loc_coor, cell2tract, params.lid_size, tract_info.shape[0], params.traj_len)
     # store data
     data_store = {
-        'cell2town': cell2town,
-        'edge_in': edge_in, 'edge_near_cell': edge_near_cell, 'edge_near_town': edge_near_town, 
-        'node_cell': node_cell, 'node_town': node_town,
+        'cell2tract': cell2tract,
+        'edge_in': edge_in, 'edge_near_cell': edge_near_cell, 'edge_near_tract': edge_near_tract, 
+        'node_cell': node_cell, 'node_tract': node_tract,
         'edge_flow_cell_idx': edge_flow_cell_idx, 'edge_flow_cell_attr': edge_flow_cell_attr, 
-        'edge_flow_town_idx': edge_flow_town_idx, 'edge_flow_town_attr': edge_flow_town_attr}
+        'edge_flow_tract_idx': edge_flow_tract_idx, 'edge_flow_tract_attr': edge_flow_tract_attr}
     pickle.dump(data_store, open(path_save_graph, 'wb'))
 
 
@@ -179,7 +179,7 @@ def settings(param=[]):
     parser.add_argument('--path_traj', type=str, default='None')
     parser.add_argument('--path_attr', type=str, default='None')
     parser.add_argument('--path_loccoor', type=str, default='None')
-    parser.add_argument('--path_town', type=str, default='None')
+    parser.add_argument('--path_tract', type=str, default='None')
     parser.add_argument('--process', type=str, default='none')
     parser.add_argument('--path_out', type=str, default='./data/')
     parser.add_argument('--file_name', type=str, default='CDRsh')
